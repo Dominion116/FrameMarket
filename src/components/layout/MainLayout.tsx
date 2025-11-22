@@ -3,7 +3,7 @@ import Sidebar from './Sidebar';
 import Header from './Header';
 import NFTCard from '../nft/NFTCard';
 import TrendingPanel from './TrendingPanel';
-import { Sheet, SheetContent } from '@/components/ui/sheet';
+import { Sheet, SheetContent } from '../../components/ui/sheet';
 
 const MainLayout: React.FC = () => {
     const [activeView, setActiveView] = useState('home');
