@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Heart, Eye, Share2, Clock, User, Ethereum } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Heart, Eye, Share2, Clock, User, Coins } from 'lucide-react';
+import { Button } from '../../components/ui/button';
 
 interface NFT {
     id: number;
@@ -81,7 +81,7 @@ const NFTCard: React.FC<NFTCardProps> = ({ nft }) => {
                 {/* Price and Likes */}
                 <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-2">
-                        <Ethereum size={16} className="text-primary" />
+                        <Coins size={16} className="text-primary" />
                         <span className="font-bold text-lg text-primary">{nft.price}</span>
                     </div>
                     <span className="text-muted-foreground text-sm">{likesCount} likes</span>
