@@ -1,72 +1,49 @@
 import React from 'react';
-import { Wallet, Copy, CheckCircle, AlertCircle, X } from 'lucide-react';
+import { Wallet, X } from 'lucide-react';
 import { Button } from '../ui/button';
-import { useToast } from '../../hooks/use-toast';
-import CopyToClipboard from 'react-copy-to-clipboard';
-import { WalletService, type WalletState } from '../../lib/walletService';
-import { useEffect, useRef, useState } from 'react';
+import { useAccount, useDisconnect, useBalance } from 'wagmi';
+import { useAppKit } from '@reown/appkit/react';
 
 const WalletConnect: React.FC = () => {
-  const { toast } = useToast();
-  const walletServiceRef = useRef<WalletService | null>(null);
-  const [walletState, setWalletState] = useState<WalletState>({
-    account: '',
-    currentNetwork: '',
-    isConnecting: false,
-    balance: '',
-    isLoadingBalance: false
+  const { address, isConnected } = useAccount();
+  const { disconnect } = useDisconnect();
+  const { open } = useAppKit();
+  const { data: balance } = useBalance({
+    address: address,
   });
 
-  useEffect(() => {
-    const walletService = new WalletService({
-      onToast: (title: string, description: string) => {
-        toast({ title, description });
-      }
-    });
-
-    walletService.onStateUpdate(setWalletState);
-    walletServiceRef.current = walletService;
-
-    return () => {
-      walletService.destroy();
-    };
-  }, [toast]);
-  const connectWallet = () => {
-    walletServiceRef.current?.connectWallet();
-  };
-
-  const disconnectWallet = () => {
-    walletServiceRef.current?.disconnectWallet();
-  };
-
   const formatAddress = (address: string) => {
-    return walletServiceRef.current?.formatAddress(address) || '';
+    if (!address) return '';
+    return `${address.slice(0, 6)}...${address.slice(-4)}`;
   };
 
-  const { account, isConnecting } = walletState;
-
-  if (!account) {
+  if (!isConnected || !address) {
     return (
       <Button
-        onClick={connectWallet}
-        disabled={isConnecting}
+        onClick={() => open()}
         className="pill-button gradient-bg text-xs sm:text-sm px-2 sm:px-4 h-8 sm:h-9"
       >
         <Wallet size={14} className="sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-        <span className="hidden xs:inline">{isConnecting ? 'Connecting...' : 'Connect'}</span>
-        <span className="xs:hidden">{isConnecting ? '...' : 'Connect'}</span>
+        <span className="hidden xs:inline">Connect</span>
+        <span className="xs:hidden">Connect</span>
       </Button>
     );
   }
+
   return (
     <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3">
-      <div className="bg-accent rounded-full px-2 sm:px-3 py-1 text-xs sm:text-sm font-medium whitespace-nowrap">
-        {formatAddress(account)}
+      <div className="bg-accent rounded-full px-2 sm:px-3 py-1 text-xs sm:text-sm font-medium">
+        <div className="whitespace-nowrap">{formatAddress(address)}</div>
+        {balance && (
+          <div className="text-[10px] sm:text-xs text-muted-foreground mt-0.5">
+            {parseFloat(balance.formatted).toFixed(4)} {balance.symbol}
+          </div>
+        )}
       </div>
       <Button
         variant="ghost"
         size="sm"
-        onClick={disconnectWallet}
+        onClick={() => disconnect()}
         className="text-muted-foreground hover:text-destructive h-8 w-8 sm:h-9 sm:w-auto sm:px-3 p-0 sm:p-2"
         title="Disconnect"
       >
