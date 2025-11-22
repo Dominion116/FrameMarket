@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Search, Bell, Menu, Filter, X } from 'lucide-react';
+import { Search, Bell, Menu, Filter, X, Moon, Sun } from 'lucide-react';
 import { Input } from '../../components/ui/input';
 import { Button } from '../../components/ui/button';
 import WalletConnect from '../../components/wallet/WalletConnect';
+import { useTheme } from '../../hooks/use-theme';
 
 interface HeaderProps {
     onSearch: (query: string) => void;
@@ -12,6 +13,7 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ onSearch, onMobileMenuToggle }) => {
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [searchValue, setSearchValue] = useState('');
+    const { theme, toggleTheme } = useTheme();
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
@@ -80,6 +82,21 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMobileMenuToggle }) => {
                     onClick={toggleSearch}
                 >
                     {isSearchOpen ? <X size={18} /> : <Search size={18} />}
+                </Button>
+
+                {/* Theme Toggle */}
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    className="rounded-full h-9 w-9 sm:h-10 sm:w-10"
+                    onClick={toggleTheme}
+                    title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+                >
+                    {theme === 'dark' ? (
+                        <Sun size={18} className="sm:w-5 sm:h-5" />
+                    ) : (
+                        <Moon size={18} className="sm:w-5 sm:h-5" />
+                    )}
                 </Button>
 
                 {/* Notifications - Hide on very small screens */}
