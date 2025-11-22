@@ -110,28 +110,28 @@ const MainLayout: React.FC = () => {
                 </Sheet>
 
                 {/* Main Content */}
-                <main className="flex-1 overflow-y-auto scrollbar-modern responsive-padding py-6">
+                <main className="flex-1 overflow-y-auto scrollbar-modern px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6">
                     <div className="max-w-7xl mx-auto">
                         {/* Header Section */}
-                        <div className="mb-8 text-center animate-fade-in-up">
-                            <h1 className="text-4xl md:text-5xl font-bold gradient-text mb-4">
+                        <div className="mb-6 sm:mb-8 text-center animate-fade-in-up">
+                            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold gradient-text mb-2 sm:mb-4 px-2">
                                 Discover Amazing NFTs
                             </h1>
-                            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+                            <p className="text-muted-foreground text-sm sm:text-base md:text-lg max-w-2xl mx-auto px-2">
                                 Explore unique digital assets from creators around the world
                             </p>
                         </div>
 
                         {/* NFT Grid */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5 md:gap-6">
                             {mockNFTs.map((nft) => (
                                 <NFTCard key={nft.id} nft={nft} />
                             ))}
                         </div>
 
                         {/* Load More Button */}
-                        <div className="text-center mt-12">
-                            <button className="modern-pill gradient-bg text-primary-foreground font-semibold">
+                        <div className="text-center mt-8 sm:mt-12">
+                            <button className="modern-pill gradient-bg text-primary-foreground font-semibold text-sm sm:text-base px-4 sm:px-8 py-2 sm:py-3">
                                 Load More NFTs
                             </button>
                         </div>

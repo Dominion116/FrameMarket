@@ -34,7 +34,7 @@ const NFTCard: React.FC<NFTCardProps> = ({ nft }) => {
                 <img
                     src={nft.image}
                     alt={nft.name}
-                    className="w-full h-64 object-cover modern-image-hover group-hover:scale-105"
+                    className="w-full h-48 sm:h-56 md:h-64 object-cover modern-image-hover group-hover:scale-105"
                 />
 
                 {/* Overlay Actions */}
@@ -50,51 +50,52 @@ const NFTCard: React.FC<NFTCardProps> = ({ nft }) => {
                 </div>
 
                 {/* Collection Badge */}
-                <div className="absolute top-4 left-4">
-                    <span className="px-3 py-1.5 bg-background/90 backdrop-blur-sm rounded-full text-xs font-medium text-foreground">
+                <div className="absolute top-2 sm:top-3 md:top-4 left-2 sm:left-3 md:left-4">
+                    <span className="px-2 sm:px-2.5 md:px-3 py-1 sm:py-1.5 bg-background/90 backdrop-blur-sm rounded-full text-[10px] sm:text-xs font-medium text-foreground">
                         {nft.collection}
                     </span>
                 </div>
             </div>
 
             {/* Content */}
-            <div className="p-5">
+            <div className="p-3 sm:p-4 md:p-5">
                 {/* Title and Actions */}
-                <div className="flex items-start justify-between mb-3">
-                    <h3 className="font-semibold text-lg truncate flex-1 mr-3">{nft.name}</h3>
+                <div className="flex items-start justify-between mb-2 sm:mb-3">
+                    <h3 className="font-semibold text-base sm:text-lg truncate flex-1 mr-2 sm:mr-3">{nft.name}</h3>
                     <Button
                         variant="ghost"
                         size="icon"
                         onClick={handleLike}
-                        className={`rounded-full transition-all ${isLiked ? 'text-destructive' : 'text-muted-foreground hover:text-destructive'}`}
+                        className={`rounded-full transition-all h-8 w-8 sm:h-9 sm:w-9 ${isLiked ? 'text-destructive' : 'text-muted-foreground hover:text-destructive'}`}
                     >
-                        <Heart size={18} fill={isLiked ? 'currentColor' : 'none'} />
+                        <Heart size={16} className="sm:w-[18px] sm:h-[18px]" fill={isLiked ? 'currentColor' : 'none'} />
                     </Button>
                 </div>
 
                 {/* Creator Info */}
-                <div className="flex items-center gap-2 text-muted-foreground text-sm mb-4">
-                    <User size={14} />
-                    <span>{nft.creator}</span>
+                <div className="flex items-center gap-1.5 sm:gap-2 text-muted-foreground text-xs sm:text-sm mb-3 sm:mb-4">
+                    <User size={12} className="sm:w-3.5 sm:h-3.5" />
+                    <span className="truncate">{nft.creator}</span>
                 </div>
 
                 {/* Price and Likes */}
-                <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-2">
-                        <Coins size={16} className="text-primary" />
-                        <span className="font-bold text-lg text-primary">{nft.price}</span>
+                <div className="flex items-center justify-between mb-3 sm:mb-4">
+                    <div className="flex items-center gap-1.5 sm:gap-2">
+                        <Coins size={14} className="sm:w-4 sm:h-4 text-primary" />
+                        <span className="font-bold text-base sm:text-lg text-primary">{nft.price}</span>
                     </div>
-                    <span className="text-muted-foreground text-sm">{likesCount} likes</span>
+                    <span className="text-muted-foreground text-xs sm:text-sm">{likesCount} likes</span>
                 </div>
 
                 {/* Time and Action Button */}
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-muted-foreground text-xs">
-                        <Clock size={12} />
-                        <span>{nft.timeAgo}</span>
+                <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-1.5 sm:gap-2 text-muted-foreground text-xs">
+                        <Clock size={10} className="sm:w-3 sm:h-3" />
+                        <span className="hidden xs:inline">{nft.timeAgo}</span>
+                        <span className="xs:hidden">{nft.timeAgo.replace(' ago', '')}</span>
                     </div>
 
-                    <Button className="modern-pill gradient-bg text-primary-foreground font-semibold text-sm">
+                    <Button className="modern-pill gradient-bg text-primary-foreground font-semibold text-xs sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2 h-8 sm:h-9">
                         Buy Now
                     </Button>
                 </div>

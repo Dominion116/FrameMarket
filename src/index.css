@@ -219,6 +219,18 @@
     .responsive-margin {
         @apply mx-4 sm:mx-6 lg:mx-8;
     }
+
+    /* Mobile Optimizations */
+    @media (max-width: 640px) {
+        .modern-pill {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        .modern-nft-card {
+            border-radius: 1.25rem;
+        }
+    }
 }
 
 /* Modern Scrollbar */
