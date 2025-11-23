@@ -48,7 +48,6 @@ const celoAlfajores = defineChain({
   },
 })
 
-// Get projectId from environment or use provided one
 const projectId = 'c4d1073b614dbe0020ac5f6d9366f228'
 
 // Create metadata object
