@@ -5,6 +5,7 @@ import NFTCard from '../nft/NFTCard';
 import TrendingPanel from './TrendingPanel';
 import { Sheet, SheetContent } from '../../components/ui/sheet';
 import { useFrameMarketListings, useListing, formatPriceEther } from '@/hooks/useFrameMarket';
+import { useNftMetadata } from '@/hooks/useNftMetadata';
 
 const MainLayout: React.FC = () => {
     const [activeView, setActiveView] = useState('home');
@@ -65,14 +66,18 @@ const MainLayout: React.FC = () => {
                                 if (!listing.data || !(listing.data as any).active) return null;
                                 const data = listing.data as any;
                                 const price = data.price as bigint;
+                                const nftAddress = data.nft as string;
+                                const tokenId = BigInt(data.tokenId);
+
+                                const { metadata } = useNftMetadata(nftAddress, tokenId);
 
                                 const nft = {
                                     id: Number(id),
-                                    name: `Token #${String(data.tokenId)}`,
-                                    image: "https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg",
+                                    name: metadata.name ?? `Token #${String(data.tokenId)}`,
+                                    image: metadata.image ?? "https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg",
                                     price: formatPriceEther(price),
                                     creator: data.seller as string,
-                                    collection: (data.nft as string) ?? 'Collection',
+                                    collection: nftAddress,
                                     likes: 0,
                                     isLiked: false,
                                     timeAgo: "Just now",
