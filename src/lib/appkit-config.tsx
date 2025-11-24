@@ -5,45 +5,24 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { defineChain } from 'viem'
 
-// Define Celo networks
-const celoMainnet = defineChain({
-  id: 42220,
-  name: 'Celo',
+// Define Base mainnet
+const baseMainnet = defineChain({
+  id: 8453,
+  name: 'Base',
   nativeCurrency: {
-    name: 'CELO',
-    symbol: 'CELO',
+    name: 'Ether',
+    symbol: 'ETH',
     decimals: 18,
   },
   rpcUrls: {
     default: {
-      http: ['https://forno.celo.org'],
+      http: ['https://mainnet.base.org'],
     },
   },
   blockExplorers: {
     default: {
-      name: 'Celo Explorer',
-      url: 'https://explorer.celo.org',
-    },
-  },
-})
-
-const celoAlfajores = defineChain({
-  id: 44787, // Celo Alfajores testnet
-  name: 'Celo Alfajores',
-  nativeCurrency: {
-    name: 'CELO',
-    symbol: 'CELO',
-    decimals: 18,
-  },
-  rpcUrls: {
-    default: {
-      http: ['https://alfajores-forno.celo-testnet.org'],
-    },
-  },
-  blockExplorers: {
-    default: {
-      name: 'Celo Alfajores Explorer',
-      url: 'https://alfajores.celoscan.io',
+      name: 'BaseScan',
+      url: 'https://basescan.org',
     },
   },
 })
@@ -58,8 +37,8 @@ const metadata = {
   icons: ['https://avatars.githubusercontent.com/u/179229932']
 }
 
-// Set the networks
-const networks = [celoMainnet, celoAlfajores]
+// Set the networks (Base mainnet only)
+const networks = [baseMainnet]
 
 // Setup queryClient
 const queryClient = new QueryClient()
