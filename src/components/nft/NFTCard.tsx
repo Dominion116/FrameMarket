@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Heart, Eye, Share2, Clock, User, Coins } from 'lucide-react';
 import { Button } from '../../components/ui/button';
+import { usePurchaseListing } from '@/hooks/useFrameMarket';
 
 interface NFT {
     id: number;
@@ -16,11 +17,17 @@ interface NFT {
 
 interface NFTCardProps {
     nft: NFT;
+    listingId?: bigint;
+    priceWei?: bigint;
 }
 
-const NFTCard: React.FC<NFTCardProps> = ({ nft }) => {
+const NFTCard: React.FC<NFTCardProps> = ({ nft, listingId, priceWei }) => {
     const [isLiked, setIsLiked] = useState(nft.isLiked);
     const [likesCount, setLikesCount] = useState(nft.likes);
+
+    const purchase = listingId !== undefined && priceWei !== undefined
+        ? usePurchaseListing(listingId, priceWei)
+        : undefined;
 
     const handleLike = () => {
         setIsLiked(!isLiked);
@@ -95,8 +102,12 @@ const NFTCard: React.FC<NFTCardProps> = ({ nft }) => {
                         <span className="xs:hidden">{nft.timeAgo.replace(' ago', '')}</span>
                     </div>
 
-                    <Button className="modern-pill gradient-bg text-primary-foreground font-semibold text-xs sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2 h-8 sm:h-9">
-                        Buy Now
+                    <Button
+                        className="modern-pill gradient-bg text-primary-foreground font-semibold text-xs sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2 h-8 sm:h-9"
+                        disabled={!purchase || purchase.isPending}
+                        onClick={() => purchase?.buy()}
+                    >
+                        {purchase?.isPending ? 'Processing...' : 'Buy Now'}
                     </Button>
                 </div>
             </div>

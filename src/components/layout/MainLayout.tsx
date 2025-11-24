@@ -4,81 +4,13 @@ import Header from './Header';
 import NFTCard from '../nft/NFTCard';
 import TrendingPanel from './TrendingPanel';
 import { Sheet, SheetContent } from '../../components/ui/sheet';
+import { useFrameMarketListings, useListing, formatPriceEther } from '@/hooks/useFrameMarket';
 
 const MainLayout: React.FC = () => {
     const [activeView, setActiveView] = useState('home');
     const [searchQuery, setSearchQuery] = useState('');
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-    // Mock NFT data
-    const mockNFTs = [
-        {
-            id: 1,
-            name: "Cosmic Explorer #123",
-            image: "https://images.pexels.com/photos/414860/pexels-photo-414860.jpeg",
-            price: "1.5 ETH",
-            creator: "0x1234...5678",
-            collection: "Cosmic Explorers",
-            likes: 42,
-            isLiked: false,
-            timeAgo: "2h ago"
-        },
-        {
-            id: 2,
-            name: "Digital Dreams #456",
-            image: "https://images.pexels.com/photos/1103970/pexels-photo-1103970.jpeg",
-            price: "2.3 ETH",
-            creator: "0xabcd...efgh",
-            collection: "Digital Dreams",
-            likes: 89,
-            isLiked: true,
-            timeAgo: "5h ago"
-        },
-        {
-            id: 3,
-            name: "Neon Genesis #789",
-            image: "https://images.pexels.com/photos/1714208/pexels-photo-1714208.jpeg",
-            price: "0.8 ETH",
-            creator: "0xneon...genesis",
-            collection: "Neon Genesis",
-            likes: 156,
-            isLiked: false,
-            timeAgo: "1d ago"
-        },
-        {
-            id: 4,
-            name: "Abstract Vision #012",
-            image: "https://images.pexels.com/photos/1021876/pexels-photo-1021876.jpeg",
-            price: "3.2 ETH",
-            creator: "0xart...vision",
-            collection: "Abstract Visions",
-            likes: 231,
-            isLiked: false,
-            timeAgo: "3h ago"
-        },
-        {
-            id: 5,
-            name: "Future Tech #345",
-            image: "https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg",
-            price: "1.9 ETH",
-            creator: "0xfuture...tech",
-            collection: "Future Tech",
-            likes: 78,
-            isLiked: true,
-            timeAgo: "6h ago"
-        },
-        {
-            id: 6,
-            name: "Nature's Beauty #678",
-            image: "https://images.pexels.com/photos/1323550/pexels-photo-1323550.jpeg",
-            price: "2.1 ETH",
-            creator: "0xnature...beauty",
-            collection: "Nature's Beauty",
-            likes: 145,
-            isLiked: false,
-            timeAgo: "8h ago"
-        }
-    ];
+    const { listingIds, isLoading } = useFrameMarketListings();
     const handleSearch = (query: string) => {
         setSearchQuery(query);
     };
@@ -124,9 +56,37 @@ const MainLayout: React.FC = () => {
 
                         {/* NFT Grid */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 md:gap-6">
-                            {mockNFTs.map((nft) => (
-                                <NFTCard key={nft.id} nft={nft} />
-                            ))}
+                            {isLoading && <div>Loading listings...</div>}
+                            {!isLoading && listingIds.length === 0 && (
+                                <div className="text-muted-foreground">No listings yet.</div>
+                            )}
+                            {!isLoading && listingIds.map((id) => {
+                                const listing = useListing(id);
+                                if (!listing.data || !(listing.data as any).active) return null;
+                                const data = listing.data as any;
+                                const price = data.price as bigint;
+
+                                const nft = {
+                                    id: Number(id),
+                                    name: `Token #${String(data.tokenId)}`,
+                                    image: "https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg",
+                                    price: formatPriceEther(price),
+                                    creator: data.seller as string,
+                                    collection: (data.nft as string) ?? 'Collection',
+                                    likes: 0,
+                                    isLiked: false,
+                                    timeAgo: "Just now",
+                                };
+
+                                return (
+                                    <NFTCard
+                                        key={Number(id)}
+                                        nft={nft}
+                                        listingId={id}
+                                        priceWei={price}
+                                    />
+                                );
+                            })}
                         </div>
 
                         {/* Load More Button */}
