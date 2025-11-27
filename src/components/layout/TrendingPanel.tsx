@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
-import { TrendingUp, Clock, Users, Flame, Activity } from 'lucide-react';
-import { useFrameMarketListings, useListing, formatPriceEther } from '@/hooks/useFrameMarket';
+import { Clock, Activity, User } from 'lucide-react';
+import { useFrameMarketListings, useListing, formatPriceEther, ListingView } from '@/hooks/useFrameMarket';
 import { useNftMetadata } from '@/hooks/useNftMetadata';
 
 const TrendingPanel: React.FC = () => {
@@ -81,16 +81,17 @@ const TrendingPanel: React.FC = () => {
 // Component for individual recent listing
 const RecentListingItem: React.FC<{ listingId: bigint }> = ({ listingId }) => {
     const listing = useListing(listingId);
+    const data = listing.data as ListingView | undefined;
+    const { metadata } = useNftMetadata(
+        data?.nft || '0x0' as `0x${string}`,
+        data?.tokenId || 0n
+    );
 
-    if (!listing.data || !(listing.data as any).active) return null;
+    if (!data || !data.active) return null;
 
-    const data = listing.data as any;
-    const price = data.price as bigint;
-    const nftAddress = data.nft as string;
-    const tokenId = BigInt(data.tokenId);
-    const seller = data.seller as string;
-
-    const { metadata } = useNftMetadata(nftAddress, tokenId);
+    const price = data.price;
+    const tokenId = data.tokenId;
+    const seller = data.seller;
 
     return (
         <div className="p-4 rounded-xl bg-gradient-to-br from-accent/30 to-accent/10 hover:from-accent/50 hover:to-accent/20 transition-all duration-300 border border-border/30 hover:border-primary/30 hover:shadow-md">
