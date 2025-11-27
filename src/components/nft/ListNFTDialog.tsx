@@ -79,44 +79,46 @@ const ListNFTDialog: React.FC<ListNFTDialogProps> = ({ trigger }) => {
         }}>
             <DialogTrigger asChild>
                 {trigger || (
-                    <Button className="modern-pill gradient-bg text-primary-foreground font-semibold">
-                        <Plus size={18} className="mr-2" />
-                        List NFT
+                    <Button className="modern-pill gradient-bg text-primary-foreground font-bold shadow-lg hover:shadow-xl">
+                        <Plus size={20} className="mr-2" />
+                        List Your NFT
                     </Button>
                 )}
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
+            <DialogContent className="sm:max-w-[500px] rounded-2xl">
                 <DialogHeader>
-                    <DialogTitle>
-                        {step === 'input' && 'List Your NFT'}
-                        {step === 'approve' && 'Approve NFT'}
-                        {step === 'list' && 'Create Listing'}
+                    <DialogTitle className="text-2xl font-bold">
+                        {step === 'input' && '🎨 List Your NFT'}
+                        {step === 'approve' && '✅ Approve NFT'}
+                        {step === 'list' && '🚀 Create Listing'}
                     </DialogTitle>
                 </DialogHeader>
-                <div className="space-y-4 py-4">
+                <div className="space-y-5 py-6">
                     {step === 'input' && (
                         <>
                             <div className="space-y-2">
-                                <Label htmlFor="nftAddress">NFT Contract Address</Label>
+                                <Label htmlFor="nftAddress" className="text-sm font-semibold">NFT Contract Address</Label>
                                 <Input
                                     id="nftAddress"
                                     placeholder="0x..."
                                     value={nftAddress}
                                     onChange={(e) => setNftAddress(e.target.value)}
+                                    className="h-11 rounded-xl font-mono text-sm"
                                 />
                             </div>
                             <div className="space-y-2">
-                                <Label htmlFor="tokenId">Token ID</Label>
+                                <Label htmlFor="tokenId" className="text-sm font-semibold">Token ID</Label>
                                 <Input
                                     id="tokenId"
                                     type="number"
                                     placeholder="1"
                                     value={tokenId}
                                     onChange={(e) => setTokenId(e.target.value)}
+                                    className="h-11 rounded-xl"
                                 />
                             </div>
                             <div className="space-y-2">
-                                <Label htmlFor="price">Price (ETH)</Label>
+                                <Label htmlFor="price" className="text-sm font-semibold">Price (ETH)</Label>
                                 <Input
                                     id="price"
                                     type="number"
@@ -124,55 +126,60 @@ const ListNFTDialog: React.FC<ListNFTDialogProps> = ({ trigger }) => {
                                     placeholder="0.1"
                                     value={price}
                                     onChange={(e) => setPrice(e.target.value)}
+                                    className="h-11 rounded-xl"
                                 />
                             </div>
                             <Button
                                 onClick={handleNext}
-                                className="w-full"
+                                className="w-full h-12 rounded-xl font-bold text-base gradient-bg shadow-lg hover:shadow-xl"
                                 disabled={!nftAddress || !tokenId || !price}
                             >
-                                Next
+                                Next Step →
                             </Button>
                         </>
                     )}
 
                     {step === 'approve' && (
-                        <div className="space-y-4">
-                            <p className="text-sm text-muted-foreground">
-                                You need to approve the marketplace to transfer your NFT. This is a one-time transaction.
-                            </p>
+                        <div className="space-y-5">
+                            <div className="p-5 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20">
+                                <p className="text-sm text-foreground font-medium leading-relaxed">
+                                    You need to approve the marketplace to transfer your NFT. This is a one-time transaction per NFT collection.
+                                </p>
+                            </div>
                             <Button
                                 onClick={handleApprove}
-                                className="w-full"
+                                className="w-full h-12 rounded-xl font-bold text-base gradient-bg shadow-lg hover:shadow-xl"
                                 disabled={!approveNFT || approveNFT.isPending}
                             >
-                                {approveNFT?.isPending ? 'Approving...' : 'Approve NFT'}
+                                {approveNFT?.isPending ? 'Approving...' : 'Approve NFT ✓'}
                             </Button>
                         </div>
                     )}
 
                     {step === 'list' && (
-                        <div className="space-y-4">
-                            <div className="rounded-lg bg-accent/50 p-4 space-y-2">
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-muted-foreground">NFT Address:</span>
-                                    <span className="font-mono">{nftAddress.slice(0, 6)}...{nftAddress.slice(-4)}</span>
+                        <div className="space-y-5">
+                            <div className="rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 p-6 space-y-4 border border-primary/20">
+                                <div className="flex justify-between items-center">
+                                    <span className="text-sm text-muted-foreground font-medium">NFT Address</span>
+                                    <span className="font-mono font-semibold text-sm">{nftAddress.slice(0, 6)}...{nftAddress.slice(-4)}</span>
                                 </div>
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-muted-foreground">Token ID:</span>
-                                    <span className="font-mono">{tokenId}</span>
+                                <div className="h-px bg-border/50"></div>
+                                <div className="flex justify-between items-center">
+                                    <span className="text-sm text-muted-foreground font-medium">Token ID</span>
+                                    <span className="font-mono font-semibold text-sm">#{tokenId}</span>
                                 </div>
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-muted-foreground">Price:</span>
-                                    <span className="font-semibold text-primary">{price} ETH</span>
+                                <div className="h-px bg-border/50"></div>
+                                <div className="flex justify-between items-center">
+                                    <span className="text-sm text-muted-foreground font-medium">Listing Price</span>
+                                    <span className="font-bold text-lg text-primary">{price} ETH</span>
                                 </div>
                             </div>
                             <Button
                                 onClick={handleList}
-                                className="w-full"
+                                className="w-full h-12 rounded-xl font-bold text-base gradient-bg shadow-lg hover:shadow-xl"
                                 disabled={listNFT.isPending}
                             >
-                                {listNFT.isPending ? 'Creating Listing...' : 'Create Listing'}
+                                {listNFT.isPending ? 'Creating Listing...' : '🚀 Create Listing'}
                             </Button>
                         </div>
                     )}

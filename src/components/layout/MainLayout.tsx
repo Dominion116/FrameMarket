@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Sparkles } from 'lucide-react';
 import Sidebar from './Sidebar';
 import Header from './Header';
 import NFTCard from '../nft/NFTCard';
@@ -81,31 +82,42 @@ const MainLayout: React.FC = () => {
                 <main className="flex-1 overflow-y-auto scrollbar-modern px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6">
                     <div className="max-w-7xl mx-auto">
                         {/* Header Section */}
-                        <div className="mb-6 sm:mb-8 text-center animate-fade-in-up">
-                            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold gradient-text mb-2 sm:mb-4 px-2">
-                                Discover Amazing NFTs
-                            </h1>
-                            <p className="text-muted-foreground text-sm sm:text-base md:text-lg max-w-2xl mx-auto px-2">
+                        <div className="mb-10 text-center animate-fade-in-up">
+                            <div className="inline-block mb-4">
+                                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold gradient-text mb-3 px-2">
+                                    Discover Amazing NFTs
+                                </h1>
+                                <div className="h-1 bg-gradient-to-r from-transparent via-primary to-transparent rounded-full"></div>
+                            </div>
+                            <p className="text-muted-foreground text-base sm:text-lg md:text-xl max-w-2xl mx-auto px-2 font-medium">
                                 Explore unique digital assets from creators around the world
                             </p>
                         </div>
 
                         {/* NFT Grid */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 md:gap-6">
-                            {isLoading && <div>Loading listings...</div>}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7 md:gap-8">
+                            {isLoading && (
+                                <div className="col-span-full flex items-center justify-center py-20">
+                                    <div className="text-center">
+                                        <div className="w-16 h-16 border-4 border-primary/30 border-t-primary rounded-full animate-spin mx-auto mb-4"></div>
+                                        <p className="text-muted-foreground font-medium">Loading listings...</p>
+                                    </div>
+                                </div>
+                            )}
                             {!isLoading && listingIds.length === 0 && (
-                                <div className="text-muted-foreground">No listings yet.</div>
+                                <div className="col-span-full flex items-center justify-center py-20">
+                                    <div className="text-center max-w-md">
+                                        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center mx-auto mb-4">
+                                            <Sparkles size={32} className="text-primary" />
+                                        </div>
+                                        <h3 className="text-xl font-bold mb-2">No listings yet</h3>
+                                        <p className="text-muted-foreground font-medium">Be the first to list an NFT on the marketplace!</p>
+                                    </div>
+                                </div>
                             )}
                             {!isLoading && listingIds.map((id) => (
                                 <ListingCard key={Number(id)} listingId={id} />
                             ))}
-                        </div>
-
-                        {/* Load More Button */}
-                        <div className="text-center mt-8 sm:mt-12">
-                            <button className="modern-pill gradient-bg text-primary-foreground font-semibold text-sm sm:text-base px-4 sm:px-8 py-2 sm:py-3">
-                                Load More NFTs
-                            </button>
                         </div>
                     </div>
                 </main>

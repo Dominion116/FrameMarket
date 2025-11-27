@@ -62,77 +62,77 @@ const NFTCard: React.FC<NFTCardProps> = ({ nft, listingId, priceWei }) => {
     };
 
     return (
-        <div className="modern-nft-card bg-card border border-border/50 overflow-hidden group">
+        <div className="modern-nft-card bg-card border border-border/40 overflow-hidden group shadow-lg hover:shadow-2xl transition-all duration-500">
             {/* Image Container */}
-            <div className="relative overflow-hidden">
+            <div className="relative overflow-hidden bg-gradient-to-br from-primary/5 to-accent/10">
                 <img
                     src={nft.image}
                     alt={nft.name}
-                    className="w-full h-48 sm:h-56 md:h-64 object-cover modern-image-hover group-hover:scale-105"
+                    className="w-full h-56 sm:h-64 md:h-72 object-cover modern-image-hover group-hover:scale-110 transition-transform duration-700"
                 />
 
                 {/* Overlay Actions */}
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
-                    <div className="flex gap-3">
-                        <Button variant="secondary" size="icon" className="rounded-full glass-effect">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 group-hover:from-black/80 transition-all duration-500 flex items-center justify-center opacity-0 group-hover:opacity-100">
+                    <div className="flex gap-4 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                        <Button variant="secondary" size="icon" className="rounded-full glass-effect shadow-xl hover:scale-110 transition-transform">
                             <Eye size={18} />
                         </Button>
-                        <Button variant="secondary" size="icon" className="rounded-full glass-effect">
+                        <Button variant="secondary" size="icon" className="rounded-full glass-effect shadow-xl hover:scale-110 transition-transform">
                             <Share2 size={18} />
                         </Button>
                     </div>
                 </div>
 
                 {/* Collection Badge */}
-                <div className="absolute top-2 sm:top-3 md:top-4 left-2 sm:left-3 md:left-4">
-                    <span className="px-2 sm:px-2.5 md:px-3 py-1 sm:py-1.5 bg-background/90 backdrop-blur-sm rounded-full text-[10px] sm:text-xs font-medium text-foreground truncate max-w-[150px]" title={nft.collection}>
+                <div className="absolute top-3 sm:top-4 left-3 sm:left-4">
+                    <span className="px-3 sm:px-4 py-1.5 sm:py-2 bg-background/95 backdrop-blur-md rounded-full text-xs sm:text-sm font-semibold text-foreground shadow-lg border border-border/50 truncate max-w-[150px]" title={nft.collection}>
                         {nft.collection.slice(0, 6)}...{nft.collection.slice(-4)}
                     </span>
                 </div>
             </div>
 
             {/* Content */}
-            <div className="p-3 sm:p-4 md:p-5">
+            <div className="p-4 sm:p-5 md:p-6 space-y-4">
                 {/* Title and Actions */}
-                <div className="flex items-start justify-between mb-2 sm:mb-3">
-                    <h3 className="font-semibold text-base sm:text-lg truncate flex-1 mr-2 sm:mr-3">{nft.name}</h3>
+                <div className="flex items-start justify-between gap-3">
+                    <h3 className="font-bold text-lg sm:text-xl truncate flex-1 leading-tight">{nft.name}</h3>
                     <Button
                         variant="ghost"
                         size="icon"
                         onClick={handleLike}
-                        className={`rounded-full transition-all h-8 w-8 sm:h-9 sm:w-9 ${isLiked ? 'text-destructive' : 'text-muted-foreground hover:text-destructive'}`}
+                        className={`rounded-full transition-all h-9 w-9 sm:h-10 sm:w-10 hover:scale-110 ${isLiked ? 'text-destructive' : 'text-muted-foreground hover:text-destructive'}`}
                     >
-                        <Heart size={16} className="sm:w-[18px] sm:h-[18px]" fill={isLiked ? 'currentColor' : 'none'} />
+                        <Heart size={18} className="sm:w-5 sm:h-5" fill={isLiked ? 'currentColor' : 'none'} />
                     </Button>
                 </div>
 
                 {/* Creator Info */}
-                <div className="flex items-center gap-1.5 sm:gap-2 text-muted-foreground text-xs sm:text-sm mb-3 sm:mb-4">
-                    <User size={12} className="sm:w-3.5 sm:h-3.5" />
-                    <span className="truncate">{nft.creator.slice(0, 6)}...{nft.creator.slice(-4)}</span>
+                <div className="flex items-center gap-2 text-muted-foreground text-sm">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center">
+                        <User size={14} />
+                    </div>
+                    <span className="truncate font-medium">{nft.creator.slice(0, 6)}...{nft.creator.slice(-4)}</span>
                 </div>
 
-                {/* Price and Likes */}
-                <div className="flex items-center justify-between mb-3 sm:mb-4">
-                    <div className="flex items-center gap-1.5 sm:gap-2">
-                        <Coins size={14} className="sm:w-4 sm:h-4 text-primary" />
-                        <span className="font-bold text-base sm:text-lg text-primary">{nft.price}</span>
-                    </div>
+                {/* Price */}
+                <div className="flex items-center gap-2 p-3 bg-gradient-to-br from-primary/5 to-primary/10 rounded-xl border border-primary/20">
+                    <Coins size={18} className="text-primary" />
+                    <span className="font-bold text-xl text-primary">{nft.price}</span>
                 </div>
 
                 {/* Action Buttons */}
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-3">
                     {isOwner ? (
                         <>
                             <Dialog open={isUpdateDialogOpen} onOpenChange={setIsUpdateDialogOpen}>
                                 <DialogTrigger asChild>
                                     <Button
                                         variant="outline"
-                                        className="flex-1 text-xs sm:text-sm h-8 sm:h-9"
+                                        className="flex-1 text-sm h-10 rounded-xl font-semibold hover:bg-primary/10 hover:border-primary/50 transition-all"
                                         disabled={updatePrice.isPending}
                                     >
-                                        <Edit size={14} className="mr-1" />
-                                        Update
+                                        <Edit size={16} className="mr-2" />
+                                        Update Price
                                     </Button>
                                 </DialogTrigger>
                                 <DialogContent>
@@ -163,21 +163,21 @@ const NFTCard: React.FC<NFTCardProps> = ({ nft, listingId, priceWei }) => {
                             </Dialog>
                             <Button
                                 variant="destructive"
-                                className="flex-1 text-xs sm:text-sm h-8 sm:h-9"
+                                className="flex-1 text-sm h-10 rounded-xl font-semibold hover:scale-105 transition-transform"
                                 onClick={handleCancelListing}
                                 disabled={cancelListing.isPending}
                             >
-                                <X size={14} className="mr-1" />
-                                {cancelListing.isPending ? 'Canceling...' : 'Cancel'}
+                                <X size={16} className="mr-2" />
+                                {cancelListing.isPending ? 'Canceling...' : 'Cancel Listing'}
                             </Button>
                         </>
                     ) : (
                         <Button
-                            className="modern-pill gradient-bg text-primary-foreground font-semibold text-xs sm:text-sm w-full h-8 sm:h-9"
+                            className="w-full h-11 rounded-xl font-bold text-base gradient-bg text-primary-foreground shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
                             disabled={!purchase || purchase.isPending}
                             onClick={() => purchase?.buy()}
                         >
-                            {purchase?.isPending ? 'Processing...' : 'Buy Now'}
+                            {purchase?.isPending ? 'Processing...' : '🚀 Buy Now'}
                         </Button>
                     )}
                 </div>

@@ -22,18 +22,20 @@ const Sidebar: React.FC<SidebarProps> = ({ activeView, onViewChange }) => {
     ];
 
     return (
-        <div className="h-full bg-sidebar-background p-6 flex flex-col">
+        <div className="h-full bg-sidebar-background p-6 flex flex-col border-r border-border/50">
             {/* Logo */}
-            <div className="mb-8 text-center">
-                <div className="flex items-center justify-center gap-2 mb-2">
-                    <Sparkles size={24} className="text-primary" />
+            <div className="mb-10 text-center">
+                <div className="flex items-center justify-center gap-3 mb-3">
+                    <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-primary to-primary-glow flex items-center justify-center shadow-lg">
+                        <Sparkles size={24} className="text-white" />
+                    </div>
                     <h1 className="text-2xl font-bold gradient-text">FrameMarket</h1>
                 </div>
-                <p className="text-muted-foreground text-sm">NFT Marketplace</p>
+                <p className="text-muted-foreground text-sm font-medium">NFT Marketplace on Base</p>
             </div>
 
             {/* Navigation */}
-            <nav className="space-y-1 flex-1">
+            <nav className="space-y-2 flex-1">
                 {menuItems.map((item) => {
                     const Icon = item.icon;
                     return (
@@ -41,12 +43,12 @@ const Sidebar: React.FC<SidebarProps> = ({ activeView, onViewChange }) => {
                             key={item.id}
                             onClick={() => onViewChange(item.id)}
                             className={cn(
-                                "modern-sidebar-item w-full flex items-center gap-3 text-left transition-all duration-200",
+                                "modern-sidebar-item w-full flex items-center gap-4 text-left transition-all duration-200 text-base font-medium",
                                 activeView === item.id && "active"
                             )}
                         >
-                            <Icon size={20} />
-                            <span className="font-medium">{item.label}</span>
+                            <Icon size={22} />
+                            <span>{item.label}</span>
                         </button>
                     );
                 })}
@@ -54,29 +56,29 @@ const Sidebar: React.FC<SidebarProps> = ({ activeView, onViewChange }) => {
             {/* Create Button */}
             <ListNFTDialog 
                 trigger={
-                    <Button className="modern-pill gradient-bg text-primary-foreground font-semibold mt-6 w-full">
-                        <Plus size={18} className="mr-2" />
-                        List NFT
+                    <Button className="modern-pill gradient-bg text-primary-foreground font-bold mt-6 w-full h-12 text-base shadow-lg hover:shadow-xl">
+                        <Plus size={20} className="mr-2" />
+                        List Your NFT
                     </Button>
                 }
             />
 
             {/* Market Stats Section */}
-            <div className="mt-8 p-5 bg-accent/50 rounded-2xl border border-border/20">
+            <div className="mt-6 p-5 bg-gradient-to-br from-primary/10 to-primary/5 rounded-2xl border border-primary/20 shadow-inner">
                 <div className="flex items-center gap-2 mb-4">
-                    <Activity size={18} className="text-primary" />
-                    <span className="font-semibold text-sm">Market Overview</span>
+                    <Activity size={20} className="text-primary" />
+                    <span className="font-bold text-base">Market Overview</span>
                 </div>
-                <div className="space-y-3">
+                <div className="space-y-4">
                     <div className="flex justify-between items-center">
-                        <span className="text-sm font-medium">Active Listings</span>
-                        <span className="text-primary text-sm font-semibold">
+                        <span className="text-sm font-medium text-muted-foreground">Active Listings</span>
+                        <span className="text-primary text-lg font-bold">
                             {isLoading ? '...' : listingIds.length}
                         </span>
                     </div>
                     <div className="flex justify-between items-center">
-                        <span className="text-sm font-medium">Network</span>
-                        <span className="text-primary text-sm font-semibold">Base</span>
+                        <span className="text-sm font-medium text-muted-foreground">Network</span>
+                        <span className="text-primary text-lg font-bold">Base</span>
                     </div>
                 </div>
             </div>
