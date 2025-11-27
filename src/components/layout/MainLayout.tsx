@@ -23,13 +23,13 @@ const ListingCard: React.FC<{ listingId: bigint }> = ({ listingId }) => {
     const nft = {
         id: Number(listingId),
         name: metadata.name ?? `Token #${String(data.tokenId)}`,
-        image: metadata.image ?? "https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg",
+        image: metadata.image ?? "https://via.placeholder.com/400x400?text=NFT",
         price: formatPriceEther(price),
         creator: data.seller as string,
         collection: nftAddress,
         likes: 0,
         isLiked: false,
-        timeAgo: "Just now",
+        timeAgo: "Recently listed",
     };
 
     return (
