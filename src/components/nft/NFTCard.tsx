@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Heart, Eye, Share2, Clock, User, Coins, Edit, X } from 'lucide-react';
+import { Heart, Eye, Share2, User, Coins, Edit, X } from 'lucide-react';
 import { Button } from '../../components/ui/button';
 import { usePurchaseListing, useUpdateListingPrice, useCancelListing } from '@/hooks/useFrameMarket';
 import { useAccount } from 'wagmi';
@@ -34,12 +34,15 @@ const NFTCard: React.FC<NFTCardProps> = ({ nft, listingId, priceWei }) => {
     const { address } = useAccount();
     const isOwner = address && nft.creator.toLowerCase() === address.toLowerCase();
 
-    const purchase = listingId !== undefined && priceWei !== undefined
-        ? usePurchaseListing(listingId, priceWei)
-        : undefined;
+    const purchase = usePurchaseListing(
+        listingId ?? 0n,
+        priceWei ?? 0n
+    );
 
     const updatePrice = useUpdateListingPrice();
     const cancelListing = useCancelListing();
+
+    const canPurchase = listingId !== undefined && priceWei !== undefined;
 
     const handleLike = () => {
         setIsLiked(!isLiked);
@@ -174,10 +177,10 @@ const NFTCard: React.FC<NFTCardProps> = ({ nft, listingId, priceWei }) => {
                     ) : (
                         <Button
                             className="w-full h-11 rounded-xl font-bold text-base gradient-bg text-primary-foreground shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
-                            disabled={!purchase || purchase.isPending}
-                            onClick={() => purchase?.buy()}
+                            disabled={!canPurchase || purchase.isPending}
+                            onClick={() => canPurchase && purchase.buy()}
                         >
-                            {purchase?.isPending ? 'Processing...' : '🚀 Buy Now'}
+                            {purchase.isPending ? 'Processing...' : '🚀 Buy Now'}
                         </Button>
                     )}
                 </div>
