@@ -1,7 +1,9 @@
 import React from 'react';
-import { Home, Compass, Library, User, Settings, Plus, TrendingUp, Sparkles } from 'lucide-react';
+import { Home, Compass, Library, User, Settings, Plus, Activity, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { useFrameMarketListings } from '@/hooks/useFrameMarket';
+import ListNFTDialog from '../nft/ListNFTDialog';
 
 interface SidebarProps {
     activeView: string;
@@ -9,6 +11,8 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ activeView, onViewChange }) => {
+    const { listingIds, isLoading } = useFrameMarketListings();
+
     const menuItems = [
         { id: 'home', label: 'Home', icon: Home },
         { id: 'explore', label: 'Explore', icon: Compass },
@@ -48,29 +52,31 @@ const Sidebar: React.FC<SidebarProps> = ({ activeView, onViewChange }) => {
                 })}
             </nav>
             {/* Create Button */}
-            <Button className="modern-pill gradient-bg text-primary-foreground font-semibold mt-6">
-                <Plus size={18} className="mr-2" />
-                Create NFT
-            </Button>
+            <ListNFTDialog 
+                trigger={
+                    <Button className="modern-pill gradient-bg text-primary-foreground font-semibold mt-6 w-full">
+                        <Plus size={18} className="mr-2" />
+                        List NFT
+                    </Button>
+                }
+            />
 
-            {/* Trending Section */}
+            {/* Market Stats Section */}
             <div className="mt-8 p-5 bg-accent/50 rounded-2xl border border-border/20">
                 <div className="flex items-center gap-2 mb-4">
-                    <TrendingUp size={18} className="text-primary" />
-                    <span className="font-semibold text-sm">Trending Now</span>
+                    <Activity size={18} className="text-primary" />
+                    <span className="font-semibold text-sm">Market Overview</span>
                 </div>
                 <div className="space-y-3">
                     <div className="flex justify-between items-center">
-                        <span className="text-sm font-medium">Bored Ape</span>
-                        <span className="text-green-600 text-sm font-semibold">+12.3%</span>
+                        <span className="text-sm font-medium">Active Listings</span>
+                        <span className="text-primary text-sm font-semibold">
+                            {isLoading ? '...' : listingIds.length}
+                        </span>
                     </div>
                     <div className="flex justify-between items-center">
-                        <span className="text-sm font-medium">CryptoPunks</span>
-                        <span className="text-green-600 text-sm font-semibold">+8.7%</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                        <span className="text-sm font-medium">Art Blocks</span>
-                        <span className="text-green-600 text-sm font-semibold">+15.2%</span>
+                        <span className="text-sm font-medium">Network</span>
+                        <span className="text-primary text-sm font-semibold">Base</span>
                     </div>
                 </div>
             </div>

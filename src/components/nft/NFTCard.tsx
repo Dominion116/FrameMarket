@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
-import { Heart, Eye, Share2, Clock, User, Coins } from 'lucide-react';
+import { Heart, Eye, Share2, Clock, User, Coins, Edit, X } from 'lucide-react';
 import { Button } from '../../components/ui/button';
-import { usePurchaseListing } from '@/hooks/useFrameMarket';
+import { usePurchaseListing, useUpdateListingPrice, useCancelListing } from '@/hooks/useFrameMarket';
+import { useAccount } from 'wagmi';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog';
+import { Input } from '../ui/input';
+import { Label } from '../ui/label';
 
 interface NFT {
     id: number;
@@ -24,14 +28,37 @@ interface NFTCardProps {
 const NFTCard: React.FC<NFTCardProps> = ({ nft, listingId, priceWei }) => {
     const [isLiked, setIsLiked] = useState(nft.isLiked);
     const [likesCount, setLikesCount] = useState(nft.likes);
+    const [newPrice, setNewPrice] = useState('');
+    const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
+
+    const { address } = useAccount();
+    const isOwner = address && nft.creator.toLowerCase() === address.toLowerCase();
 
     const purchase = listingId !== undefined && priceWei !== undefined
         ? usePurchaseListing(listingId, priceWei)
         : undefined;
 
+    const updatePrice = useUpdateListingPrice();
+    const cancelListing = useCancelListing();
+
     const handleLike = () => {
         setIsLiked(!isLiked);
         setLikesCount(isLiked ? likesCount - 1 : likesCount + 1);
+    };
+
+    const handleUpdatePrice = () => {
+        if (!listingId || !newPrice) return;
+        const priceInWei = BigInt(parseFloat(newPrice) * 1e18);
+        updatePrice.updatePrice(listingId, priceInWei);
+        setIsUpdateDialogOpen(false);
+        setNewPrice('');
+    };
+
+    const handleCancelListing = () => {
+        if (!listingId) return;
+        if (window.confirm('Are you sure you want to cancel this listing?')) {
+            cancelListing.cancel(listingId);
+        }
     };
 
     return (
@@ -58,8 +85,8 @@ const NFTCard: React.FC<NFTCardProps> = ({ nft, listingId, priceWei }) => {
 
                 {/* Collection Badge */}
                 <div className="absolute top-2 sm:top-3 md:top-4 left-2 sm:left-3 md:left-4">
-                    <span className="px-2 sm:px-2.5 md:px-3 py-1 sm:py-1.5 bg-background/90 backdrop-blur-sm rounded-full text-[10px] sm:text-xs font-medium text-foreground">
-                        {nft.collection}
+                    <span className="px-2 sm:px-2.5 md:px-3 py-1 sm:py-1.5 bg-background/90 backdrop-blur-sm rounded-full text-[10px] sm:text-xs font-medium text-foreground truncate max-w-[150px]" title={nft.collection}>
+                        {nft.collection.slice(0, 6)}...{nft.collection.slice(-4)}
                     </span>
                 </div>
             </div>
@@ -82,7 +109,7 @@ const NFTCard: React.FC<NFTCardProps> = ({ nft, listingId, priceWei }) => {
                 {/* Creator Info */}
                 <div className="flex items-center gap-1.5 sm:gap-2 text-muted-foreground text-xs sm:text-sm mb-3 sm:mb-4">
                     <User size={12} className="sm:w-3.5 sm:h-3.5" />
-                    <span className="truncate">{nft.creator}</span>
+                    <span className="truncate">{nft.creator.slice(0, 6)}...{nft.creator.slice(-4)}</span>
                 </div>
 
                 {/* Price and Likes */}
@@ -91,24 +118,68 @@ const NFTCard: React.FC<NFTCardProps> = ({ nft, listingId, priceWei }) => {
                         <Coins size={14} className="sm:w-4 sm:h-4 text-primary" />
                         <span className="font-bold text-base sm:text-lg text-primary">{nft.price}</span>
                     </div>
-                    <span className="text-muted-foreground text-xs sm:text-sm">{likesCount} likes</span>
                 </div>
 
-                {/* Time and Action Button */}
-                <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-1.5 sm:gap-2 text-muted-foreground text-xs">
-                        <Clock size={10} className="sm:w-3 sm:h-3" />
-                        <span className="hidden xs:inline">{nft.timeAgo}</span>
-                        <span className="xs:hidden">{nft.timeAgo.replace(' ago', '')}</span>
-                    </div>
-
-                    <Button
-                        className="modern-pill gradient-bg text-primary-foreground font-semibold text-xs sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2 h-8 sm:h-9"
-                        disabled={!purchase || purchase.isPending}
-                        onClick={() => purchase?.buy()}
-                    >
-                        {purchase?.isPending ? 'Processing...' : 'Buy Now'}
-                    </Button>
+                {/* Action Buttons */}
+                <div className="flex items-center gap-2">
+                    {isOwner ? (
+                        <>
+                            <Dialog open={isUpdateDialogOpen} onOpenChange={setIsUpdateDialogOpen}>
+                                <DialogTrigger asChild>
+                                    <Button
+                                        variant="outline"
+                                        className="flex-1 text-xs sm:text-sm h-8 sm:h-9"
+                                        disabled={updatePrice.isPending}
+                                    >
+                                        <Edit size={14} className="mr-1" />
+                                        Update
+                                    </Button>
+                                </DialogTrigger>
+                                <DialogContent>
+                                    <DialogHeader>
+                                        <DialogTitle>Update Listing Price</DialogTitle>
+                                    </DialogHeader>
+                                    <div className="space-y-4 py-4">
+                                        <div className="space-y-2">
+                                            <Label htmlFor="newPrice">New Price (ETH)</Label>
+                                            <Input
+                                                id="newPrice"
+                                                type="number"
+                                                step="0.001"
+                                                placeholder="0.1"
+                                                value={newPrice}
+                                                onChange={(e) => setNewPrice(e.target.value)}
+                                            />
+                                        </div>
+                                        <Button
+                                            onClick={handleUpdatePrice}
+                                            disabled={!newPrice || updatePrice.isPending}
+                                            className="w-full"
+                                        >
+                                            {updatePrice.isPending ? 'Updating...' : 'Update Price'}
+                                        </Button>
+                                    </div>
+                                </DialogContent>
+                            </Dialog>
+                            <Button
+                                variant="destructive"
+                                className="flex-1 text-xs sm:text-sm h-8 sm:h-9"
+                                onClick={handleCancelListing}
+                                disabled={cancelListing.isPending}
+                            >
+                                <X size={14} className="mr-1" />
+                                {cancelListing.isPending ? 'Canceling...' : 'Cancel'}
+                            </Button>
+                        </>
+                    ) : (
+                        <Button
+                            className="modern-pill gradient-bg text-primary-foreground font-semibold text-xs sm:text-sm w-full h-8 sm:h-9"
+                            disabled={!purchase || purchase.isPending}
+                            onClick={() => purchase?.buy()}
+                        >
+                            {purchase?.isPending ? 'Processing...' : 'Buy Now'}
+                        </Button>
+                    )}
                 </div>
             </div>
         </div>
