@@ -44,7 +44,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMobileMenuToggle }) => {
                 </Button>
                 {/* Logo */}
                 <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-primary to-primary-glow flex items-center justify-center shadow-md hidden sm:flex">
+                    <div className="sm:flex hidden w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-primary to-primary-glow items-center justify-center shadow-md">
                         <Sparkles size={18} className="text-white" />
                     </div>
                     <h1 className="text-lg sm:text-xl md:text-2xl font-bold gradient-text whitespace-nowrap">

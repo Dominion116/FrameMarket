@@ -5,21 +5,22 @@ import Header from './Header';
 import NFTCard from '../nft/NFTCard';
 import TrendingPanel from './TrendingPanel';
 import { Sheet, SheetContent } from '../../components/ui/sheet';
-import { useFrameMarketListings, useListing, formatPriceEther } from '@/hooks/useFrameMarket';
+import { useFrameMarketListings, useListing, formatPriceEther, ListingView } from '@/hooks/useFrameMarket';
 import { useNftMetadata } from '@/hooks/useNftMetadata';
 
 // Separate component to handle individual listing with hooks
 const ListingCard: React.FC<{ listingId: bigint }> = ({ listingId }) => {
     const listing = useListing(listingId);
+    const data = listing.data as ListingView | undefined;
+    const { metadata } = useNftMetadata(
+        data?.nft || '0x0' as `0x${string}`,
+        data?.tokenId || 0n
+    );
     
-    if (!listing.data || !(listing.data as any).active) return null;
+    if (!data || !data.active) return null;
     
-    const data = listing.data as any;
-    const price = data.price as bigint;
-    const nftAddress = data.nft as string;
-    const tokenId = BigInt(data.tokenId);
-
-    const { metadata } = useNftMetadata(nftAddress, tokenId);
+    const price = data.price;
+    const nftAddress = data.nft;
 
     const nft = {
         id: Number(listingId),
@@ -45,11 +46,11 @@ const ListingCard: React.FC<{ listingId: bigint }> = ({ listingId }) => {
 
 const MainLayout: React.FC = () => {
     const [activeView, setActiveView] = useState('home');
-    const [searchQuery, setSearchQuery] = useState('');
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const { listingIds, isLoading } = useFrameMarketListings();
-    const handleSearch = (query: string) => {
-        setSearchQuery(query);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const handleSearch = (_query: string) => {
+        // Search functionality can be implemented here
     };
 
     return (

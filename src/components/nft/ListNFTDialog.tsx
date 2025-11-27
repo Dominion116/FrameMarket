@@ -20,10 +20,11 @@ const ListNFTDialog: React.FC<ListNFTDialogProps> = ({ trigger }) => {
 
     const { toast } = useToast();
     const listNFT = useListNFT();
-    const approveNFT = nftAddress ? useApproveNFT(nftAddress as `0x${string}`) : null;
-    const { isApproved } = nftAddress && tokenId 
-        ? useIsApproved(nftAddress as `0x${string}`, BigInt(tokenId))
-        : { isApproved: false };
+    const approveNFT = useApproveNFT((nftAddress || '0x0') as `0x${string}`);
+    const { isApproved } = useIsApproved(
+        (nftAddress || '0x0') as `0x${string}`,
+        tokenId ? BigInt(tokenId) : 0n
+    );
 
     useEffect(() => {
         if (approveNFT?.isSuccess) {
@@ -62,7 +63,7 @@ const ListNFTDialog: React.FC<ListNFTDialogProps> = ({ trigger }) => {
     };
 
     const handleApprove = () => {
-        if (!approveNFT || !tokenId) return;
+        if (!tokenId) return;
         approveNFT.approve(BigInt(tokenId));
     };
 
@@ -149,9 +150,9 @@ const ListNFTDialog: React.FC<ListNFTDialogProps> = ({ trigger }) => {
                             <Button
                                 onClick={handleApprove}
                                 className="w-full h-12 rounded-xl font-bold text-base gradient-bg shadow-lg hover:shadow-xl"
-                                disabled={!approveNFT || approveNFT.isPending}
+                                disabled={!nftAddress || !tokenId || approveNFT.isPending}
                             >
-                                {approveNFT?.isPending ? 'Approving...' : 'Approve NFT ✓'}
+                                {approveNFT.isPending ? 'Approving...' : 'Approve NFT ✓'}
                             </Button>
                         </div>
                     )}
