@@ -7,6 +7,41 @@ import { Sheet, SheetContent } from '../../components/ui/sheet';
 import { useFrameMarketListings, useListing, formatPriceEther } from '@/hooks/useFrameMarket';
 import { useNftMetadata } from '@/hooks/useNftMetadata';
 
+// Separate component to handle individual listing with hooks
+const ListingCard: React.FC<{ listingId: bigint }> = ({ listingId }) => {
+    const listing = useListing(listingId);
+    
+    if (!listing.data || !(listing.data as any).active) return null;
+    
+    const data = listing.data as any;
+    const price = data.price as bigint;
+    const nftAddress = data.nft as string;
+    const tokenId = BigInt(data.tokenId);
+
+    const { metadata } = useNftMetadata(nftAddress, tokenId);
+
+    const nft = {
+        id: Number(listingId),
+        name: metadata.name ?? `Token #${String(data.tokenId)}`,
+        image: metadata.image ?? "https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg",
+        price: formatPriceEther(price),
+        creator: data.seller as string,
+        collection: nftAddress,
+        likes: 0,
+        isLiked: false,
+        timeAgo: "Just now",
+    };
+
+    return (
+        <NFTCard
+            key={Number(listingId)}
+            nft={nft}
+            listingId={listingId}
+            priceWei={price}
+        />
+    );
+};
+
 const MainLayout: React.FC = () => {
     const [activeView, setActiveView] = useState('home');
     const [searchQuery, setSearchQuery] = useState('');
@@ -61,37 +96,9 @@ const MainLayout: React.FC = () => {
                             {!isLoading && listingIds.length === 0 && (
                                 <div className="text-muted-foreground">No listings yet.</div>
                             )}
-                            {!isLoading && listingIds.map((id) => {
-                                const listing = useListing(id);
-                                if (!listing.data || !(listing.data as any).active) return null;
-                                const data = listing.data as any;
-                                const price = data.price as bigint;
-                                const nftAddress = data.nft as string;
-                                const tokenId = BigInt(data.tokenId);
-
-                                const { metadata } = useNftMetadata(nftAddress, tokenId);
-
-                                const nft = {
-                                    id: Number(id),
-                                    name: metadata.name ?? `Token #${String(data.tokenId)}`,
-                                    image: metadata.image ?? "https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg",
-                                    price: formatPriceEther(price),
-                                    creator: data.seller as string,
-                                    collection: nftAddress,
-                                    likes: 0,
-                                    isLiked: false,
-                                    timeAgo: "Just now",
-                                };
-
-                                return (
-                                    <NFTCard
-                                        key={Number(id)}
-                                        nft={nft}
-                                        listingId={id}
-                                        priceWei={price}
-                                    />
-                                );
-                            })}
+                            {!isLoading && listingIds.map((id) => (
+                                <ListingCard key={Number(id)} listingId={id} />
+                            ))}
                         </div>
 
                         {/* Load More Button */}

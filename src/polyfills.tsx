@@ -1,6 +1,5 @@
-// Browser polyfills for Solana and wallet compatibility
-import { Buffer } from 'buffer';
-import process from 'process';
+// Browser polyfills for wallet compatibility
+// Note: Buffer and process are handled by vite-plugin-node-polyfills
 
 declare global {
   interface Window {
@@ -8,33 +7,9 @@ declare global {
   }
 }
 
-// Global Buffer polyfill
-if (!window.Buffer) {
-  window.Buffer = Buffer;
-  window.process = process;
+// Ensure global is defined
+if (typeof globalThis !== 'undefined' && !globalThis.global) {
+  globalThis.global = globalThis;
 }
 
-
-// Global polyfill
-if (typeof globalThis !== 'undefined') {
-  globalThis.Buffer = Buffer;
-  globalThis.process = process;
-  if (!globalThis.global) {
-    globalThis.global = globalThis;
-  }
-}
-
-
-// Polyfill for toformat and big number libraries
-if (typeof BigInt === 'undefined') {
-    window.BigInt = Object.assign(
-      function(value: string | number | bigint | boolean) {
-        return parseInt(value as string, 10);
-      },
-      {
-        asIntN: (bits: number, int: bigint) => int,
-        asUintN: (bits: number, int: bigint) => int,
-      }
-    ) as unknown as BigIntConstructor;
-  }
 export default {}; 
